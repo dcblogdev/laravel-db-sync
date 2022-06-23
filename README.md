@@ -1,4 +1,4 @@
-# DB Sync
+# Laravel DB Sync
 
 ## Introduction
 Sync remote database to a local database
