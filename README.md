@@ -8,7 +8,7 @@ Sync remote database to a local database
 Install the package.
 
 ```bash
-composer require dcblogdev/db-sync
+composer require dcblogdev/laravel-db-sync
 ```
 
 ## Config
