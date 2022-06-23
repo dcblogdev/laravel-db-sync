@@ -1,0 +1,34 @@
+{
+    "name": "dcblogdev/db-sync",
+    "description": "Sync database down.",
+    "type": "library",
+    "authors": [
+        {
+            "name": "David Carr",
+            "email": "dave@dcblog.dev"
+        }
+    ],
+    "require-dev": {
+        "orchestra/testbench": "^5.0|^6.23|^7.0",
+        "pestphp/pest": "^1.21",
+        "pestphp/pest-plugin-laravel": "^1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Dcblogdev\\DbSync\\": "src/",
+            "Dcblogdev\\DbSync\\Tests\\": "tests"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/TestCase.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+              "Dcblogdev\\DbSync\\DbSyncServiceProvider"
+            ]
+        }
+    }
+}
