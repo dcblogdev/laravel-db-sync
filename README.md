@@ -5,7 +5,7 @@
 ## Introduction
 Sync remote database to a local database
 
->Note this requires remote MySQL access in order to connect to a remote MySQL database. It does not use SSH currently. I'm open for a PR's ;)
+>Note this requires remote MySQL access in order to connect to a remote MySQL database. It does not use SSH currently. I'm open to PR's
 
 ## Install
 
