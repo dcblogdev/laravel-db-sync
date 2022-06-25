@@ -25,7 +25,7 @@ php artisan vendor:publish --provider="Dcblogdev\DbSync\DbSyncServiceProvider" -
 
 ## .env 
 
-Set the remove database credentials in your .env file
+Set the remote database credentials in your .env file
 
 ```
 REMOTE_DATABASE_HOST=
