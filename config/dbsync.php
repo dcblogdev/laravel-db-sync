@@ -25,27 +25,27 @@ return [
     /**
      * Database username
      */
-    'username'              => env('REMOTE_DATABASE_USERNAME', ''),
+    'username' => env('REMOTE_DATABASE_USERNAME', ''),
 
     /**
      * Set the database name
      */
-    'database'              => env('REMOTE_DATABASE_NAME', ''),
+    'database' => env('REMOTE_DATABASE_NAME', ''),
 
     /**
      * Set the database password
      */
-    'password'              => env('REMOTE_DATABASE_PASSWORD', ''),
+    'password' => env('REMOTE_DATABASE_PASSWORD', ''),
 
     /**
      * provide a comma seperated list of tables to ignore, when set the tables specified will not be exported
      */
-    'ignore'                => env('REMOTE_DATABASE_IGNORE_TABLES', ''),
+    'ignore' => env('REMOTE_DATABASE_IGNORE_TABLES', ''),
 
     /**
      * Sets if the exported SQL file will be imported into the current database connection
      */
-    'ImportSqlFile'         => env('REMOTE_IMPORT_FILE', 'true'),
+    'ImportSqlFile' => env('REMOTE_IMPORT_FILE', 'true'),
 
     /**
      * Sets if the generated file.sql will be deleted after it has been imported.
