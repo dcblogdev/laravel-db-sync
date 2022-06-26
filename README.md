@@ -5,7 +5,7 @@
 ## Introduction
 Sync remote database to a local database
 
->Note this requires remote MySQL access in order to connect to a remote MySQL database. It does not use SSH currently. I'm open to PR's
+Connection can be made over SSH or using a remote MySQL connection.
 
 ## Install
 
@@ -27,12 +27,32 @@ php artisan vendor:publish --provider="Dcblogdev\DbSync\DbSyncServiceProvider" -
 
 Set the remote database credentials in your .env file
 
+When using SSH Add:
+```
+REMOTE_USE_SSH=true
+REMOTE_SSH_PORT=22
+REMOTE_SSH_USERNAME=
+REMOTE_DATABASE_HOST=
+
+REMOTE_DATABASE_USERNAME=
+REMOTE_DATABASE_NAME=
+REMOTE_DATABASE_PASSWORD=
+REMOTE_DATABASE_IGNORE_TABLES=''
+
+REMOTE_REMOVE_FILE_AFTER_IMPORT=true
+REMOTE_IMPORT_FILE=true
+```
+
+For only MySQL remote connections:
 ```
 REMOTE_DATABASE_HOST=
 REMOTE_DATABASE_USERNAME=
 REMOTE_DATABASE_NAME=
 REMOTE_DATABASE_PASSWORD=
 REMOTE_DATABASE_IGNORE_TABLES=''
+
+REMOTE_REMOVE_FILE_AFTER_IMPORT=true
+REMOTE_IMPORT_FILE=true
 ```
 
 Set a comma seperate list of tables NOT to export in `REMOTE_DATABASE_IGNORE_TABLES`
