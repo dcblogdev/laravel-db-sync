@@ -29,8 +29,8 @@ class DbSyncCommand extends Command
         $password              = config('dbsync.password');
         $ignore                = config('dbsync.ignore');
         $ignoreTables          = explode(',', $ignore);
-        $ImportSqlFile         = config('dbdync.ImportSqlFile');
-        $removeFileAfterImport = config('dbdync.removeFileAfterImport');
+        $importSqlFile         = config('dbsync.importSqlFile');
+        $removeFileAfterImport = config('dbsync.removeFileAfterImport');
 
         if (empty($host) || empty($username) || empty($database)) {
             $this->error("DB credentials not set, have you published the config and set ENV variables?");
@@ -52,7 +52,7 @@ class DbSyncCommand extends Command
 
             $this->comment(implode(PHP_EOL, $output));
 
-            if ($ImportSqlFile === true) {
+            if ($importSqlFile === true) {
                 DB::unprepared(file_get_contents(base_path('file.sql')));
             }
 

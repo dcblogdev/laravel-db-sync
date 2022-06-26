@@ -45,7 +45,7 @@ return [
     /**
      * Sets if the exported SQL file will be imported into the current database connection
      */
-    'ImportSqlFile' => env('REMOTE_IMPORT_FILE', 'true'),
+    'importSqlFile' => env('REMOTE_IMPORT_FILE', 'true'),
 
     /**
      * Sets if the generated file.sql will be deleted after it has been imported.
