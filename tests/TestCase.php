@@ -3,7 +3,7 @@
 namespace Dcblogdev\DbSync\Tests;
 
 use Orchestra\Testbench\TestCase as Orchestra;
-use TopPackages\DbSync\DbSyncServiceProvider;
+use Dcblogdev\DbSync\DbSyncServiceProvider;
 
 class TestCase extends Orchestra
 {
