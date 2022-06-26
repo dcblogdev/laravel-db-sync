@@ -36,6 +36,6 @@ test('runs with valid credentials', function () {
     config(['dbsync.username' => 'root']);
     config(['dbsync.database' => 'demo']);
 
-    $this->artisan('db:production-sync')
+    $this->artisan('db:production-sync --test')
         ->expectsOutput('DB Synced');
 });
