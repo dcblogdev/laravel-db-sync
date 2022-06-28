@@ -5,6 +5,8 @@
 ## Introduction
 Sync remote database to a local database
 
+> A word of warning you should only sync a remote database into a local database if you have permission to do so within your organisation's policies. I'm syncing during early phases of development where the data is largely test data and not actual customer data.
+
 Connection can be made over SSH or using a remote MySQL connection.
 
 ## Install
