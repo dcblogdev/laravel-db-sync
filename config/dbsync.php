@@ -20,7 +20,7 @@ return [
     /**
      * Set the SSH port number, defaults to 22 when no option provided
      */
-    'sshPort' => env('REMOTE_DATABASE_PORT', '22'),
+    'sshPort' => env('REMOTE_SSH_PORT', '22'),
 
     /**
      * Database username
