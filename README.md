@@ -59,7 +59,7 @@ REMOTE_IMPORT_FILE=true
 
 Set a comma seperate list of tables NOT to export in `REMOTE_DATABASE_IGNORE_TABLES`
 
-To generate the SQL with a custom name `DEFAULT_FILE_NAME`
+To generate a SQL with a custom file name `REMOTE_DEFAULT_FILE_NAME`
 
 ## Usage
 
