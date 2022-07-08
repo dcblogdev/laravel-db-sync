@@ -55,5 +55,5 @@ return [
     /**
      * Sets the default name for SQL file if --filename is not provided
      */
-    'defaultFileName' => env('DEFAULT_FILE_NAME', 'file.sql'),
+    'defaultFileName' => env('REMOTE_DEFAULT_FILE_NAME', 'file.sql'),
 ];

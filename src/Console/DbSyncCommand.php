@@ -31,7 +31,7 @@ class DbSyncCommand extends Command
         $ignoreTables          = explode(',', $ignore);
         $importSqlFile         = config('dbsync.importSqlFile');
         $removeFileAfterImport = config('dbsync.removeFileAfterImport');
-        $fileName       = $this->argument('filename') ?? config('dbsync.defaultFileName');
+        $fileName              = $this->argument('filename') ?? config('dbsync.defaultFileName');
 
         if (empty($host) || empty($username) || empty($database)) {
             $this->error("DB credentials not set, have you published the config and set ENV variables?");
