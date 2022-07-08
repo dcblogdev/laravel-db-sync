@@ -48,7 +48,12 @@ return [
     'importSqlFile' => env('REMOTE_IMPORT_FILE', 'true'),
 
     /**
-     * Sets if the generated file.sql will be deleted after it has been imported.
+     * Sets if the generated SQL file will be deleted after it has been imported.
      */
     'removeFileAfterImport' => env('REMOTE_REMOVE_FILE_AFTER_IMPORT', 'true'),
+
+    /**
+     * Sets the default name for SQL file if --filename is not provided
+     */
+    'defaultFileName' => env('REMOTE_DEFAULT_FILE_NAME', 'file.sql'),
 ];

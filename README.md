@@ -23,9 +23,9 @@ You can publish the config file with:
 
 ```
 php artisan vendor:publish --provider="Dcblogdev\DbSync\DbSyncServiceProvider" --tag="config"
-``` 
+```
 
-## .env 
+## .env
 
 Set the remote database credentials in your .env file
 
@@ -58,6 +58,8 @@ REMOTE_IMPORT_FILE=true
 ```
 
 Set a comma seperate list of tables NOT to export in `REMOTE_DATABASE_IGNORE_TABLES`
+
+To generate a SQL with a custom file name `REMOTE_DEFAULT_FILE_NAME`
 
 ## Usage
 
