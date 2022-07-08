@@ -68,3 +68,15 @@ To export a remote database to OVERRIDE your local database by running:
 ```bash
 php artisan db:production-sync
 ```
+
+Provide a filename for export on the fly by passing the option --filename, remember to provide .sql
+
+```bash 
+php artisan db:production-sync --filename=other.sql
+```
+
+Run the command without attempting to export:
+
+```bash 
+php artisan db:production-sync --test
+```
