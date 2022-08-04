@@ -18,7 +18,10 @@ class DbSyncServiceProvider extends ServiceProvider
 
     public function provides()
     {
-        return [Console\DbSyncCommand::class];
+        return [
+            Console\DbSyncCommand::class,
+            Console\RemoteSyncCommand::class
+        ];
     }
 
     protected function publishConfig()
@@ -32,6 +35,7 @@ class DbSyncServiceProvider extends ServiceProvider
     {
         $this->commands([
             Console\DbSyncCommand::class,
+            Console\RemoteSyncCommand::class
         ]);
     }
 }
