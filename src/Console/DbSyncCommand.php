@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class DbSyncCommand extends Command
 {
-    protected $signature   = 'db:production-sync {--test} {--filename=}';
+    protected $signature   = 'db:production-sync {--T|test} {--F|filename=}';
     protected $description = 'Sync production database with local';
 
     public function handle(): bool
@@ -39,8 +39,8 @@ class DbSyncCommand extends Command
         }
 
         if ($inTest === false) {
-
             $ignoreString = null;
+
             foreach ($ignoreTables as $name) {
                 $ignoreString .= " --ignore-table=$database.$name";
             }
