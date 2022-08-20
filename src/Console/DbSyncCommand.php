@@ -27,6 +27,7 @@ class DbSyncCommand extends Command
 
         $username              = config('dbsync.username');
         $database              = config('dbsync.database');
+        $port                  = config('dbsync.port');
         $password              = config('dbsync.password');
         $ignore                = config('dbsync.ignore');
         $ignoreTables          = explode(',', $ignore);
@@ -48,9 +49,9 @@ class DbSyncCommand extends Command
             }
 
             if ($useSsh === true) {
-                exec("ssh $sshUsername@$host -p$sshPort mysqldump -u $username -p$password $database $ignoreString > $fileName", $output);
+                exec("ssh $sshUsername@$host -p$sshPort mysqldump --port$port -u$username -p$password $database $ignoreString > $fileName", $output);
             } else {
-                exec("mysqldump -h$host -u $username -p$password $database $ignoreString --column-statistics=0 > $fileName", $output);
+                exec("mysqldump -h$host --port$port -u$username -p$password $database $ignoreString --column-statistics=0 > $fileName", $output);
             }
 
             $this->comment(implode(PHP_EOL, $output));

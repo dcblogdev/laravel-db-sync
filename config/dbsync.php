@@ -28,6 +28,11 @@ return [
     'username' => env('REMOTE_DATABASE_USERNAME', ''),
 
     /*
+     * Database port
+     */
+    'port' => env('REMOTE_DATABASE_PORT', '3306'),
+
+    /*
      * Set the database name
      */
     'database' => env('REMOTE_DATABASE_NAME', ''),
