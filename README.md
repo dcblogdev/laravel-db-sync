@@ -37,6 +37,7 @@ REMOTE_SSH_USERNAME=
 REMOTE_DATABASE_HOST=
 
 REMOTE_DATABASE_USERNAME=
+REMOTE_DATABASE_PORT=3306
 REMOTE_DATABASE_NAME=
 REMOTE_DATABASE_PASSWORD=
 REMOTE_DATABASE_IGNORE_TABLES=''
@@ -49,6 +50,7 @@ For only MySQL remote connections:
 ```
 REMOTE_DATABASE_HOST=
 REMOTE_DATABASE_USERNAME=
+REMOTE_DATABASE_PORT=3306
 REMOTE_DATABASE_NAME=
 REMOTE_DATABASE_PASSWORD=
 REMOTE_DATABASE_IGNORE_TABLES=''
@@ -80,3 +82,16 @@ Run the command without attempting to export:
 ```bash 
 php artisan db:production-sync --test
 ```
+
+## Aliases
+
+There are shortcuts that can be used:
+
+`-T` = will use `--test`
+`F` = will use `--filename`
+
+## Alternative name
+
+When connecting to a none production database, say a staging database you can choose to use this alternative name:
+
+`db:remote-sync` may be used instead of `db:production-sync`
