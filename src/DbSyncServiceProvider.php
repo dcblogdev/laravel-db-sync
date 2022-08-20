@@ -2,7 +2,6 @@
 
 namespace Dcblogdev\DbSync;
 
-use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 
 class DbSyncServiceProvider extends ServiceProvider
@@ -10,7 +9,6 @@ class DbSyncServiceProvider extends ServiceProvider
     public function boot()
     {
         if ($this->app->runningInConsole()) {
-
             $this->publishConfig();
             $this->publishCommands();
         }
@@ -20,7 +18,7 @@ class DbSyncServiceProvider extends ServiceProvider
     {
         return [
             Console\DbSyncCommand::class,
-            Console\RemoteSyncCommand::class
+            Console\RemoteSyncCommand::class,
         ];
     }
 
@@ -35,7 +33,7 @@ class DbSyncServiceProvider extends ServiceProvider
     {
         $this->commands([
             Console\DbSyncCommand::class,
-            Console\RemoteSyncCommand::class
+            Console\RemoteSyncCommand::class,
         ]);
     }
 }

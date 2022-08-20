@@ -12,7 +12,7 @@ class RemoteSyncCommand extends Command
     public function handle(): bool
     {
         return $this->call('db:production-sync', [
-            '--test'    => $this->option('test'),
+            '--test'     => $this->option('test'),
             '--filename' => $this->option('filename'),
         ]);
     }

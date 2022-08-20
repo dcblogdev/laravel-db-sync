@@ -14,8 +14,9 @@ class DbSyncCommand extends Command
     {
         $inTest = $this->option('test');
 
-        if (!in_array(config('app.env'), ['local', 'staging'])) {
+        if (! in_array(config('app.env'), ['local', 'staging'])) {
             $this->error('DB sync will only run on local and staging environments');
+
             return true;
         }
 
@@ -34,7 +35,8 @@ class DbSyncCommand extends Command
         $fileName              = $this->option('filename') ?? config('dbsync.defaultFileName');
 
         if (empty($host) || empty($username) || empty($database)) {
-            $this->error("DB credentials not set, have you published the config and set ENV variables?");
+            $this->error('DB credentials not set, have you published the config and set ENV variables?');
+
             return true;
         }
 
@@ -62,7 +64,7 @@ class DbSyncCommand extends Command
             }
         }
 
-        $this->comment("DB Synced");
+        $this->comment('DB Synced');
 
         return true;
     }
