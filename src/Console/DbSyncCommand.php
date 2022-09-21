@@ -35,6 +35,8 @@ class DbSyncCommand extends Command
         $removeFileAfterImport = config('dbsync.removeFileAfterImport');
         $fileName              = $this->option('filename') ?? config('dbsync.defaultFileName');
 
+        $targetConnection      = config('dbsync.targetConnection');
+
         if (empty($host) || empty($username) || empty($database)) {
             $this->error('DB credentials not set, have you published the config and set ENV variables?');
 
@@ -49,15 +51,15 @@ class DbSyncCommand extends Command
             }
 
             if ($useSsh === true) {
-                exec("ssh $sshUsername@$host -p$sshPort mysqldump --port$port -u$username -p$password $database $ignoreString > $fileName", $output);
+                exec("ssh $sshUsername@$host -p$sshPort mysqldump -P$port -u$username -p$password $database $ignoreString > $fileName", $output);
             } else {
-                exec("mysqldump -h$host --port$port -u$username -p$password $database $ignoreString --column-statistics=0 > $fileName", $output);
+                exec("mysqldump -h$host -P$port -u$username -p$password $database $ignoreString --column-statistics=0 > $fileName", $output);
             }
 
             $this->comment(implode(PHP_EOL, $output));
 
             if ($importSqlFile === true) {
-                DB::unprepared(file_get_contents(base_path($fileName)));
+                DB::connection($targetConnection)->unprepared(file_get_contents(base_path($fileName)));
             }
 
             if ($removeFileAfterImport === true) {

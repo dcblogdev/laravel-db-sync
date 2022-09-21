@@ -63,6 +63,11 @@ Set a comma seperate list of tables NOT to export in `REMOTE_DATABASE_IGNORE_TAB
 
 To generate a SQL with a custom file name `REMOTE_DEFAULT_FILE_NAME`
 
+To specify a different local database connection:
+```
+LOCAL_DATABASE_CONNECTION=different_mysql_connection
+```
+
 ## Usage
 
 To export a remote database to OVERRIDE your local database by running:
