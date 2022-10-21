@@ -61,4 +61,9 @@ return [
      * Sets the default name for SQL file if --filename is not provided
      */
     'defaultFileName' => env('REMOTE_DEFAULT_FILE_NAME', 'file.sql'),
+
+    /*
+     * Sets the target databse connection
+     */
+    'targetConnection' => env('LOCAL_TARGET_CONNECTION', 'mysql'),
 ];
