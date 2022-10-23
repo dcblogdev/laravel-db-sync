@@ -65,7 +65,7 @@ To generate a SQL with a custom file name `REMOTE_DEFAULT_FILE_NAME`
 
 To specify a different local database connection:
 ```
-LOCAL_DATABASE_CONNECTION=different_mysql_connection
+LOCAL_TARGET_CONNECTION=different_mysql_connection
 ```
 
 ## Usage
