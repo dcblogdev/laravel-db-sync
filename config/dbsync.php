@@ -66,4 +66,6 @@ return [
      * Sets the target databse connection
      */
     'targetConnection' => env('LOCAL_TARGET_CONNECTION', 'mysql'),
+
+    'mysqldumpSkipTzUtc' => env('REMOTE_MYSQLDUMP_SKIP_TZ_UTC', false),
 ];
