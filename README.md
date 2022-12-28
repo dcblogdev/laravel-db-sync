@@ -68,6 +68,11 @@ To specify a different local database connection:
 LOCAL_TARGET_CONNECTION=different_mysql_connection
 ```
 
+For only mysqldump:
+```
+REMOTE_MYSQLDUMP_SKIP_TZ_UTC=true
+```
+
 ## Usage
 
 To export a remote database to OVERRIDE your local database by running:

@@ -34,6 +34,7 @@ class DbSyncCommand extends Command
         $importSqlFile         = config('dbsync.importSqlFile');
         $removeFileAfterImport = config('dbsync.removeFileAfterImport');
         $fileName              = $this->option('filename') ?? config('dbsync.defaultFileName');
+        $mysqldumpSkipTzUtc    = config('dbsync.mysqldumpSkipTzUtc') ? '--skip-tz-utc' : '';
 
         $targetConnection      = config('dbsync.targetConnection');
 
@@ -53,7 +54,7 @@ class DbSyncCommand extends Command
             if ($useSsh === true) {
                 exec("ssh $sshUsername@$host -p$sshPort mysqldump -P$port -u$username -p$password $database $ignoreString > $fileName", $output);
             } else {
-                exec("mysqldump -h$host -P$port -u$username -p$password $database $ignoreString --column-statistics=0 > $fileName", $output);
+                exec("mysqldump -h$host -P$port -u$username -p$password $database $ignoreString $mysqldumpSkipTzUtc --column-statistics=0 > $fileName", $output);
             }
 
             $this->comment(implode(PHP_EOL, $output));
