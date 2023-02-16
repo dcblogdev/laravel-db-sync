@@ -36,7 +36,8 @@ class DbSyncCommand extends Command
         $fileName              = $this->option('filename') ?? config('dbsync.defaultFileName');
         $mysqldumpSkipTzUtc    = config('dbsync.mysqldumpSkipTzUtc') ? '--skip-tz-utc' : '';
 
-        $targetConnection      = config('dbsync.targetConnection');
+        $targetConnectionName  = config('dbsync.targetConnection');
+        $targetConnection      = config("database.connections.$targetConnectionName");
 
         if (empty($host) || empty($username) || empty($database)) {
             $this->error('DB credentials not set, have you published the config and set ENV variables?');
