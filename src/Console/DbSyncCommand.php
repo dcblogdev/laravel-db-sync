@@ -51,19 +51,19 @@ class DbSyncCommand extends Command
                 $ignoreString .= " --ignore-table=$database.$name";
             }
 
-            if ($useSsh === true) {
+            if ($useSsh === "true") {
                 exec("ssh $sshUsername@$host -p$sshPort mysqldump -P$port -u$username -p$password $database $ignoreString > $fileName", $output);
             } else {
-                exec("mysqldump -h$host -P$port -u$username -p$password $database $ignoreString $mysqldumpSkipTzUtc --column-statistics=0 > $fileName", $output);
+                exec("mysqldump -h$host -P$port -u$username -p$password $database $ignoreString $mysqldumpSkipTzUtc --set-gtid-purged=OFF --column-statistics=0 > $fileName", $output);
             }
 
             $this->comment(implode(PHP_EOL, $output));
 
-            if ($importSqlFile === true) {
+            if ($importSqlFile === "true") {
                 DB::connection($targetConnection)->unprepared(file_get_contents(base_path($fileName)));
             }
 
-            if ($removeFileAfterImport === true) {
+            if ($removeFileAfterImport === "true") {
                 unlink($fileName);
             }
         }
