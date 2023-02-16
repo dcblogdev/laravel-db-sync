@@ -36,7 +36,8 @@ class DbSyncCommand extends Command
         $fileName              = $this->option('filename') ?? config('dbsync.defaultFileName');
         $mysqldumpSkipTzUtc    = config('dbsync.mysqldumpSkipTzUtc') ? '--skip-tz-utc' : '';
 
-        $targetConnection      = config('dbsync.targetConnection');
+        $targetConnectionName  = config('dbsync.targetConnection');
+        $targetConnection      = config("database.connections.$targetConnectionName");
 
         if (empty($host) || empty($username) || empty($database)) {
             $this->error('DB credentials not set, have you published the config and set ENV variables?');
@@ -51,19 +52,19 @@ class DbSyncCommand extends Command
                 $ignoreString .= " --ignore-table=$database.$name";
             }
 
-            if ($useSsh === true) {
+            if ($useSsh === "true") {
                 exec("ssh $sshUsername@$host -p$sshPort mysqldump -P$port -u$username -p$password $database $ignoreString > $fileName", $output);
             } else {
-                exec("mysqldump -h$host -P$port -u$username -p$password $database $ignoreString $mysqldumpSkipTzUtc --column-statistics=0 > $fileName", $output);
+                exec("mysqldump -h$host -P$port -u$username -p$password $database $ignoreString $mysqldumpSkipTzUtc --set-gtid-purged=OFF --column-statistics=0 > $fileName", $output);
             }
 
             $this->comment(implode(PHP_EOL, $output));
 
-            if ($importSqlFile === true) {
-                DB::connection($targetConnection)->unprepared(file_get_contents(base_path($fileName)));
+            if ($importSqlFile === "true") {
+                exec('mysql -u root -h ' . $targetConnection['host'] . ' -p ' . $targetConnection['database'] . ' -p' . $targetConnection['password'] . ' < ' . $fileName, $output)
             }
 
-            if ($removeFileAfterImport === true) {
+            if ($removeFileAfterImport === "true") {
                 unlink($fileName);
             }
         }
