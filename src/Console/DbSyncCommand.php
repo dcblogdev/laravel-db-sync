@@ -60,7 +60,7 @@ class DbSyncCommand extends Command
             $this->comment(implode(PHP_EOL, $output));
 
             if ($importSqlFile === "true") {
-                DB::connection($targetConnection)->unprepared(file_get_contents(base_path($fileName)));
+                exec('mysql -u root -h ' . $targetConnection['host'] . ' -p ' . $targetConnection['database'] . ' -p' . $targetConnection['password'] . ' < ' . $fileName, $output)
             }
 
             if ($removeFileAfterImport === "true") {
