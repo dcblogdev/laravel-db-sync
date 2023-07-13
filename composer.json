@@ -1,11 +1,11 @@
 {
-    "name": "dcblogdev/laravel-db-sync",
+    "name": "zaryabakhtar/laravel-db-sync",
     "description": "Sync database down.",
     "type": "library",
     "authors": [
         {
-            "name": "David Carr",
-            "email": "dave@dcblog.dev"
+            "name": "Zaryab Akhtar",
+            "email": "zaryabakhtar9@gmail.com"
         }
     ],
     "require-dev": {
