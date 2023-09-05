@@ -68,6 +68,12 @@ To specify a different local database connection:
 LOCAL_TARGET_CONNECTION=different_mysql_connection
 ```
 
+Set the mysql command path:
+
+```
+LOCAL_MYSQL_PATH=/usr/bin/mysql
+```
+
 For only mysqldump:
 ```
 REMOTE_MYSQLDUMP_SKIP_TZ_UTC=true

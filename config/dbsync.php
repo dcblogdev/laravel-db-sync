@@ -68,4 +68,6 @@ return [
     'targetConnection' => env('LOCAL_TARGET_CONNECTION', 'mysql'),
 
     'mysqldumpSkipTzUtc' => env('REMOTE_MYSQLDUMP_SKIP_TZ_UTC', false),
+    
+    'localMysqlPath' => env('LOCAL_MYSQL_PATH', '/usr/local/bin/mysql'),
 ];
