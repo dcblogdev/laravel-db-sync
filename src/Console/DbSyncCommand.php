@@ -20,11 +20,12 @@ class DbSyncCommand extends Command
             return true;
         }
 
-        $host        = config('dbsync.host');
         $useSsh      = config('dbsync.useSsh');
         $sshUsername = config('dbsync.sshUsername');
         $sshPort     = config('dbsync.sshPort');
+        $host        = config('dbsync.host');
 
+        $mysqlHostName         = config('dbsync.mysqlHostName');
         $username              = config('dbsync.username');
         $database              = config('dbsync.database');
         $port                  = config('dbsync.port');
@@ -59,7 +60,8 @@ class DbSyncCommand extends Command
             }
 
             if ($useSsh === true) {
-                exec("ssh $sshUsername@$host -p$sshPort mysqldump -P$port -u$username -p$password $database $ignoreString > $fileName", $output);
+                echo($mysqlHostName . PHP_EOL);
+                exec("ssh $sshUsername@$host -p$sshPort mysqldump -P$port -h$mysqlHostName -u$username -p$password $database $ignoreString > $fileName", $output);
             } else {
                 exec("mysqldump -h$host -P$port -u$username -p$password $database $ignoreString $mysqldumpSkipTzUtc --column-statistics=0 > $fileName", $output);
             }
