@@ -37,6 +37,13 @@ class DbSyncCommand extends Command
         $mysqldumpSkipTzUtc    = config('dbsync.mysqldumpSkipTzUtc') ? '--skip-tz-utc' : '';
 
         $targetConnection      = config('dbsync.targetConnection');
+        
+        $localUsername = config('database.connections.mysql.username');
+        $localPassword = config('database.connections.mysql.password');
+        $localHostname = config('database.connections.mysql.host');
+        $localPort = config('database.connections.mysql.port');
+        $localDatabase = config('database.connections.mysql.database');
+        $localMysqlPath = config('dbsync.localMysqlPath');
 
         if (empty($host) || empty($username) || empty($database)) {
             $this->error('DB credentials not set, have you published the config and set ENV variables?');
@@ -60,7 +67,10 @@ class DbSyncCommand extends Command
             $this->comment(implode(PHP_EOL, $output));
 
             if ($importSqlFile === true) {
-                DB::connection($targetConnection)->unprepared(file_get_contents(base_path($fileName)));
+                $command = $localPassword
+                    ? "$localMysqlPath -u$localUsername -h$localHostname -p$localPassword -P$localPort $localDatabase < $fileName"
+                    : "$localMysqlPath -u$localUsername -h$localHostname -P$localPort $localDatabase < $fileName";
+                exec($command, $output);
             }
 
             if ($removeFileAfterImport === true) {
