@@ -1,0 +1,33 @@
+name: PHP Pipeline
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 2
+      matrix:
+        php-versions: ['8.2']
+
+    name: PHP ${{ matrix.php-versions }}
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@master
+      with:
+        php-version: ${{ matrix.php-versions }}
+        coverage: xdebug
+
+    - name: Validate composer.json and composer.lock
+      run: composer validate
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Run test suite
+      run: ./vendor/bin/pest

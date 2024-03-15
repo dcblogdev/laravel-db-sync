@@ -9,8 +9,8 @@
         }
     ],
     "require-dev": {
-        "orchestra/testbench": "^5.0|^6.23|^7.0|^8.0",
-        "pestphp/pest": "^1.21",
+        "orchestra/testbench": "^5.0|^6.23|^7.0|^8.0|^9.0",
+        "pestphp/pest": "^1.21|^2.0",
         "pestphp/pest-plugin-laravel": "^1.1",
         "friendsofphp/php-cs-fixer": "^3.9"
     },

@@ -28,6 +28,11 @@ return [
     'username' => env('REMOTE_DATABASE_USERNAME', ''),
 
     /*
+     * Database host (optional)
+     */
+    'mysqlHostName' => env('REMOTE_DATABASE_MYSQL_HOSTNAME', 'localhost'),
+
+    /*
      * Database port
      */
     'port' => env('REMOTE_DATABASE_PORT', '3306'),
@@ -69,6 +74,7 @@ return [
 
     'mysqldumpSkipTzUtc' => env('REMOTE_MYSQLDUMP_SKIP_TZ_UTC', false),
 
+
     /*
     * List all the environment variables that need to be set for the command to work
     */
@@ -76,4 +82,6 @@ return [
         'local',
         'staging'
     ],
+    
+    'localMysqlPath' => env('LOCAL_MYSQL_PATH', '/usr/local/bin/mysql'),
 ];

@@ -1,3 +1,7 @@
+## Community
+
+There is a Discord community. https://discord.gg/VYau8hgwrm For quick help, ask questions in the appropriate channel.
+
 # Laravel DB Sync
 
 ![DB Dync](https://repository-images.githubusercontent.com/506690782/a5b01352-4869-4e6d-8e46-d44e93c960df)
@@ -66,6 +70,12 @@ To generate a SQL with a custom file name `REMOTE_DEFAULT_FILE_NAME`
 To specify a different local database connection:
 ```
 LOCAL_TARGET_CONNECTION=different_mysql_connection
+```
+
+Set the mysql command path:
+
+```
+LOCAL_MYSQL_PATH=/usr/bin/mysql
 ```
 
 For only mysqldump:
