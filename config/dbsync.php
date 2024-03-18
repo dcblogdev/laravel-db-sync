@@ -68,7 +68,7 @@ return [
     'defaultFileName' => env('REMOTE_DEFAULT_FILE_NAME', 'file.sql'),
 
     /*
-     * Sets the target databse connection
+     * Sets the target database connection
      */
     'targetConnection' => env('LOCAL_TARGET_CONNECTION', 'mysql'),
 
