@@ -38,7 +38,7 @@ class DbSyncCommand extends Command
         $mysqldumpSkipTzUtc    = config('dbsync.mysqldumpSkipTzUtc') ? '--skip-tz-utc' : '';
 
         $targetConnection      = config('dbsync.targetConnection');
-        
+
         $localUsername = config('database.connections.mysql.username');
         $localPassword = config('database.connections.mysql.password');
         $localHostname = config('database.connections.mysql.host');
@@ -59,28 +59,32 @@ class DbSyncCommand extends Command
                 $ignoreString .= " --ignore-table=$database.$name";
             }
 
+            $totalSteps = 2;
+            $progressBar = $this->output->createProgressBar($totalSteps);
+
             if ($useSsh === true) {
                 echo($mysqlHostName . PHP_EOL);
-                exec("ssh $sshUsername@$host -p$sshPort mysqldump -P$port -h$mysqlHostName -u$username -p$password $database $ignoreString > $fileName", $output);
+                exec("ssh $sshUsername@$host -p$sshPort mysqldump --single-transaction --set-gtid-purged=OFF --port=$port --host=$mysqlHostName --user=$username --password=$password $database $ignoreString > $fileName", $output);
             } else {
-                exec("mysqldump -h$host -P$port -u$username -p$password $database $ignoreString $mysqldumpSkipTzUtc --column-statistics=0 > $fileName", $output);
+                exec("mysqldump --single-transaction --set-gtid-purged=OFF --port=$port --host=$mysqlHostName --user=$username --password=$password $database $ignoreString $mysqldumpSkipTzUtc --column-statistics=0 > $fileName", $output);
             }
 
-            $this->comment(implode(PHP_EOL, $output));
+            $progressBar->advance();
 
-            if ($importSqlFile === true) {
-                $command = $localPassword
-                    ? "$localMysqlPath -u$localUsername -h$localHostname -p$localPassword -P$localPort $localDatabase < $fileName"
-                    : "$localMysqlPath -u$localUsername -h$localHostname -P$localPort $localDatabase < $fileName";
-                exec($command, $output);
-            }
+            $command = $localPassword
+                ? "$localMysqlPath -u$localUsername -h$localHostname -p$localPassword -P$localPort $localDatabase < $fileName"
+                : "$localMysqlPath -u$localUsername -h$localHostname -P$localPort $localDatabase < $fileName";
+            exec($command, $output);
+
+            $progressBar->advance();
+            $progressBar->finish();
 
             if ($removeFileAfterImport === true) {
                 unlink($fileName);
             }
         }
 
-        $this->comment('DB Synced');
+        $this->comment("\nDB Synced");
 
         return true;
     }
