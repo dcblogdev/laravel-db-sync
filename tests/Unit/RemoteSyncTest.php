@@ -30,5 +30,8 @@ test('runs with valid credentials', function () {
     config(['dbsync.database' => 'demo']);
 
     $this->artisan('db:remote-sync --test')
-        ->expectsOutput('DB Synced');
+        ->doesntExpectOutputToContain('DB sync will only run on local and staging environments')
+        ->doesntExpectOutputToContain('DB credentials not set, have you published the config and set ENV variables?')
+        ->assertExitCode(true)
+        ->expectsOutput("\nDB Synced");
 });

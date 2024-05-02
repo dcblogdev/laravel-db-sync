@@ -26,5 +26,9 @@
   <php>
     <env name="DB_CONNECTION" value="testing"/>
     <env name="APP_KEY" value="base64:2fl+Ktvkfl+Fuz4Qp/A75G2RTiWVA/ZoKZvp6fiiM10="/>
+    <env name="DBSYNC_USESSH" value="true"/>
+    <env name="DBSYNC_SSHUSERNAME" value="username"/>
+    <env name="DBSYNC_SSHPORT" value="22"/>
+    <env name="DBSYNC_HOST" value="localhost"/>
   </php>
 </phpunit>
