@@ -38,12 +38,15 @@ class DbSyncCommand extends Command
         $mysqldumpSkipTzUtc    = config('dbsync.mysqldumpSkipTzUtc') ? '--skip-tz-utc' : '';
 
         $targetConnection      = config('dbsync.targetConnection');
+        $defaultConnection     = config('database.default');
 
-        $localUsername = config('database.connections.mysql.username');
-        $localPassword = config('database.connections.mysql.password');
-        $localHostname = config('database.connections.mysql.host');
-        $localPort = config('database.connections.mysql.port');
-        $localDatabase = config('database.connections.mysql.database');
+        $defaultConnection = empty($targetConnection) ? $defaultConnection: $targetConnection;
+
+        $localUsername = config("database.connections.{$defaultConnection}.username");
+        $localPassword = config("database.connections.{$defaultConnection}.password");
+        $localHostname = config("database.connections.{$defaultConnection}.host");
+        $localPort = config("database.connections.{$defaultConnection}.port");
+        $localDatabase = config("database.connections.{$defaultConnection}.database");
         $localMysqlPath = config('dbsync.localMysqlPath');
 
         if (empty($host) || empty($username) || empty($database)) {
