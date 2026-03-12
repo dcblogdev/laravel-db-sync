@@ -103,6 +103,14 @@ Run the command without attempting to export:
 php artisan db:production-sync --test
 ```
 
+Sync only specific tables by passing a comma-separated list with `--tables`:
+
+```bash
+php artisan db:production-sync --tables=users,orders,products
+```
+
+When `--tables` is used, the `REMOTE_DATABASE_IGNORE_TABLES` list is bypassed — only the specified tables are exported.
+
 ## Aliases
 
 There are shortcuts that can be used:
