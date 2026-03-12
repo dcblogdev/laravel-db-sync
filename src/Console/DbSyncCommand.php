@@ -3,11 +3,10 @@
 namespace Dcblogdev\DbSync\Console;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 class DbSyncCommand extends Command
 {
-    protected $signature   = 'db:production-sync {--T|test} {--F|filename=}';
+    protected $signature   = 'db:production-sync {--T|test} {--F|filename=} {--tables=}';
     protected $description = 'Sync production database with local';
 
     public function handle(): bool
@@ -32,7 +31,6 @@ class DbSyncCommand extends Command
         $password              = config('dbsync.password');
         $ignore                = config('dbsync.ignore');
         $ignoreTables          = explode(',', $ignore);
-        $importSqlFile         = config('dbsync.importSqlFile');
         $removeFileAfterImport = config('dbsync.removeFileAfterImport');
         $fileName              = $this->option('filename') ?? config('dbsync.defaultFileName');
         $mysqldumpSkipTzUtc    = config('dbsync.mysqldumpSkipTzUtc') ? '--skip-tz-utc' : '';
@@ -40,7 +38,7 @@ class DbSyncCommand extends Command
         $targetConnection      = config('dbsync.targetConnection');
         $defaultConnection     = config('database.default');
 
-        $defaultConnection = empty($targetConnection) ? $defaultConnection: $targetConnection;
+        $defaultConnection = empty($targetConnection) ? $defaultConnection : $targetConnection;
 
         $localUsername = config("database.connections.{$defaultConnection}.username");
         $localPassword = config("database.connections.{$defaultConnection}.password");
@@ -56,38 +54,46 @@ class DbSyncCommand extends Command
         }
 
         if ($inTest === false) {
+
             $ignoreString = null;
 
-            foreach ($ignoreTables as $name) {
-                $ignoreString .= " --ignore-table=$database.$name";
+            $tablesToDump = '';
+
+            if ($this->option('tables')) {
+                $tables = explode(',', $this->option('tables'));
+                $tablesToDump = implode(' ', $tables);
+            } else {
+                foreach ($ignoreTables as $name) {
+                    $ignoreString .= " --ignore-table=$database.$name";
+                }
             }
 
-            $totalSteps = 2;
-            $progressBar = $this->output->createProgressBar($totalSteps);
+            $useSsh && $this->info("\n" . sprintf('Connecting to %s@%s on port %s', $sshUsername, $host, $sshPort) . "\n");
+
+            if (isset($tables) && count($tables) > 0) {
+                $this->info("\n" . 'Syncing tables: ' . implode(', ', $tables) . "\n");
+            } else {
+                $this->info("\n" . 'Syncing database: ' . $database . "\n");
+            }
 
             if ($useSsh === true) {
-                echo($mysqlHostName . PHP_EOL);
-                exec("ssh $sshUsername@$host -p$sshPort mysqldump --single-transaction --set-gtid-purged=OFF --port=$port --host=$mysqlHostName --user=$username --password=$password $database $ignoreString > $fileName", $output);
+                exec("ssh $sshUsername@$host -p$sshPort mysqldump --single-transaction --set-gtid-purged=OFF --port=$port --host=$mysqlHostName --user=$username --password=$password $database $tablesToDump $ignoreString > $fileName", $output);
             } else {
-                exec("mysqldump --single-transaction --set-gtid-purged=OFF --port=$port --host=$mysqlHostName --user=$username --password=$password $database $ignoreString $mysqldumpSkipTzUtc --column-statistics=0 > $fileName", $output);
+                exec("mysqldump --single-transaction --set-gtid-purged=OFF --port=$port --host=$mysqlHostName --user=$username --password=$password $database $tablesToDump $ignoreString $mysqldumpSkipTzUtc --column-statistics=0 > $fileName", $output);
             }
-
-            $progressBar->advance();
 
             $command = $localPassword
                 ? "$localMysqlPath -u$localUsername -h$localHostname -p$localPassword -P$localPort $localDatabase < $fileName"
                 : "$localMysqlPath -u$localUsername -h$localHostname -P$localPort $localDatabase < $fileName";
-            exec($command, $output);
 
-            $progressBar->advance();
-            $progressBar->finish();
+            exec($command, $output);
 
             if ($removeFileAfterImport === true) {
                 unlink($fileName);
             }
         }
 
-        $this->comment("\nDB Synced");
+        $this->info("\n\n" . "DB Synced" . "\n");
 
         return true;
     }
