@@ -76,24 +76,46 @@ class DbSyncCommand extends Command
                 $this->info("\n" . 'Syncing database: ' . $database . "\n");
             }
 
+            $bar = $this->output->createProgressBar(2);
+            $bar->setFormat(' %current%/%max% [%bar%] %percent:3s%% -- %message%');
+            $bar->setMessage('Exporting...');
+            $bar->start();
+
             if ($useSsh === true) {
-                exec("ssh $sshUsername@$host -p$sshPort mysqldump --single-transaction --set-gtid-purged=OFF --port=$port --host=$mysqlHostName --user=$username --password=$password $database $tablesToDump $ignoreString > $fileName", $output);
+                exec("ssh $sshUsername@$host -p$sshPort \"mysqldump --single-transaction --set-gtid-purged=OFF --port=$port --host=$mysqlHostName --user=$username --password=$password $database $tablesToDump $ignoreString 2>/dev/null\" > $fileName", $output);
             } else {
-                exec("mysqldump --single-transaction --set-gtid-purged=OFF --port=$port --host=$mysqlHostName --user=$username --password=$password $database $tablesToDump $ignoreString $mysqldumpSkipTzUtc --column-statistics=0 > $fileName", $output);
+                $remoteCnf = tempnam(sys_get_temp_dir(), 'dbsync_');
+                file_put_contents($remoteCnf, "[client]\npassword={$password}\n");
+                exec("mysqldump --defaults-extra-file=$remoteCnf --single-transaction --set-gtid-purged=OFF --port=$port --host=$mysqlHostName --user=$username $database $tablesToDump $ignoreString $mysqldumpSkipTzUtc --column-statistics=0 > $fileName", $output);
+                unlink($remoteCnf);
             }
 
+            $bar->setMessage('Importing...');
+            $bar->advance();
+
+            $localCnf = tempnam(sys_get_temp_dir(), 'dbsync_');
+            file_put_contents($localCnf, "[client]\npassword={$localPassword}\n");
+
             $command = $localPassword
-                ? "$localMysqlPath -u$localUsername -h$localHostname -p$localPassword -P$localPort $localDatabase < $fileName"
+                ? "$localMysqlPath --defaults-extra-file=$localCnf -u$localUsername -h$localHostname -P$localPort $localDatabase < $fileName"
                 : "$localMysqlPath -u$localUsername -h$localHostname -P$localPort $localDatabase < $fileName";
 
             exec($command, $output);
+
+            if ($localPassword) {
+                unlink($localCnf);
+            }
+
+            $bar->setMessage('Done!');
+            $bar->finish();
+            $this->newLine();
 
             if ($removeFileAfterImport === true) {
                 unlink($fileName);
             }
         }
 
-        $this->info("\n\n" . "DB Synced" . "\n");
+        $this->info("\nDB Synced");
 
         return true;
     }
