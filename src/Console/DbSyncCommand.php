@@ -2,11 +2,13 @@
 
 namespace Dcblogdev\DbSync\Console;
 
+use Faker\Factory as Faker;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class DbSyncCommand extends Command
 {
-    protected $signature   = 'db:production-sync {--T|test} {--F|filename=} {--tables=}';
+    protected $signature   = 'db:production-sync {--T|test} {--F|filename=} {--tables=} {--A|anonymize}';
     protected $description = 'Sync production database with local';
 
     public function handle(): bool
@@ -40,11 +42,11 @@ class DbSyncCommand extends Command
 
         $defaultConnection = empty($targetConnection) ? $defaultConnection : $targetConnection;
 
-        $localUsername = config("database.connections.{$defaultConnection}.username");
-        $localPassword = config("database.connections.{$defaultConnection}.password");
-        $localHostname = config("database.connections.{$defaultConnection}.host");
-        $localPort = config("database.connections.{$defaultConnection}.port");
-        $localDatabase = config("database.connections.{$defaultConnection}.database");
+        $localUsername  = config("database.connections.{$defaultConnection}.username");
+        $localPassword  = config("database.connections.{$defaultConnection}.password");
+        $localHostname  = config("database.connections.{$defaultConnection}.host");
+        $localPort      = config("database.connections.{$defaultConnection}.port");
+        $localDatabase  = config("database.connections.{$defaultConnection}.database");
         $localMysqlPath = config('dbsync.localMysqlPath');
 
         if (empty($host) || empty($username) || empty($database)) {
@@ -54,13 +56,12 @@ class DbSyncCommand extends Command
         }
 
         if ($inTest === false) {
-
             $ignoreString = null;
 
             $tablesToDump = '';
 
             if ($this->option('tables')) {
-                $tables = explode(',', $this->option('tables'));
+                $tables       = explode(',', $this->option('tables'));
                 $tablesToDump = implode(' ', $tables);
             } else {
                 foreach ($ignoreTables as $name) {
@@ -68,12 +69,12 @@ class DbSyncCommand extends Command
                 }
             }
 
-            $useSsh && $this->info("\n" . sprintf('Connecting to %s@%s on port %s', $sshUsername, $host, $sshPort) . "\n");
+            $useSsh && $this->info("\n".sprintf('Connecting to %s@%s on port %s', $sshUsername, $host, $sshPort)."\n");
 
             if (isset($tables) && count($tables) > 0) {
-                $this->info("\n" . 'Syncing tables: ' . implode(', ', $tables) . "\n");
+                $this->info("\n".'Syncing tables: '.implode(', ', $tables)."\n");
             } else {
-                $this->info("\n" . 'Syncing database: ' . $database . "\n");
+                $this->info("\n".'Syncing database: '.$database."\n");
             }
 
             $bar = $this->output->createProgressBar(2);
@@ -113,10 +114,83 @@ class DbSyncCommand extends Command
             if ($removeFileAfterImport === true) {
                 unlink($fileName);
             }
+
+            // Anonymize data if --anonymize flag is set
+            if ($this->option('anonymize')) {
+                $this->anonymizeData($defaultConnection);
+            }
         }
 
         $this->info("\nDB Synced");
 
         return true;
+    }
+
+    protected function anonymizeData(string $connection): void
+    {
+        $anonymizationConfig = config('dbsync.anonymize');
+
+        if (empty($anonymizationConfig) || ! is_array($anonymizationConfig)) {
+            $this->warn('No anonymization configuration found. Add tables to config/dbsync.php');
+
+            return;
+        }
+
+        $this->newLine();
+        $this->info('Anonymizing data...');
+        $this->newLine();
+
+        $faker       = Faker::create();
+        $totalTables = count($anonymizationConfig);
+        $bar         = $this->output->createProgressBar($totalTables);
+        $bar->setFormat(' %current%/%max% [%bar%] %percent:3s%% -- %message%');
+        $bar->setMessage('Starting anonymization...');
+        $bar->start();
+
+        foreach ($anonymizationConfig as $table => $columns) {
+            $bar->setMessage("Anonymizing table: {$table}");
+
+            try {
+                // Get all records from the table
+                $records = DB::connection($connection)->table($table)->get();
+
+                foreach ($records as $record) {
+                    $updates = [];
+
+                    foreach ($columns as $column => $fakerMethod) {
+                        // Handle special cases like bcrypt
+                        if (str_starts_with($fakerMethod, 'bcrypt:')) {
+                            $actualMethod     = str_replace('bcrypt:', '', $fakerMethod);
+                            $updates[$column] = bcrypt($faker->$actualMethod);
+                        } else {
+                            $updates[$column] = $faker->$fakerMethod;
+                        }
+                    }
+
+                    // Use all columns as WHERE conditions to uniquely identify the record
+                    $where = [];
+                    foreach ((array) $record as $col => $val) {
+                        $where[$col] = $val;
+                    }
+
+                    // Update the record
+                    DB::connection($connection)
+                        ->table($table)
+                        ->where($where)
+                        ->limit(1)
+                        ->update($updates);
+                }
+
+                $bar->advance();
+            } catch (\Exception $e) {
+                $this->newLine();
+                $this->error("Failed to anonymize table '{$table}': ".$e->getMessage());
+                $bar->advance();
+            }
+        }
+
+        $bar->setMessage('Anonymization complete!');
+        $bar->finish();
+        $this->newLine();
     }
 }
