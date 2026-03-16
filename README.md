@@ -29,6 +29,12 @@ You can publish the config file with:
 php artisan vendor:publish --provider="Dcblogdev\DbSync\DbSyncServiceProvider" --tag="config"
 ```
 
+**Note:** If you're updating from an earlier version, republish the config to get the new anonymization options:
+
+```
+php artisan vendor:publish --provider="Dcblogdev\DbSync\DbSyncServiceProvider" --tag="config" --force
+```
+
 ## .env
 
 Set the remote database credentials in your .env file
@@ -111,12 +117,56 @@ php artisan db:production-sync --tables=users,orders,products
 
 When `--tables` is used, the `REMOTE_DATABASE_IGNORE_TABLES` list is bypassed — only the specified tables are exported.
 
+## Anonymizing Data
+
+You can anonymize sensitive data after syncing by using the `--anonymize` or `-A` flag. This is **opt-in only** and disabled by default.
+
+### Configuration
+
+First, define which tables and columns should be anonymized in `config/dbsync.php`:
+
+```php
+'anonymize' => [
+    'users' => [
+        'email' => 'safeEmail',
+        'name' => 'name',
+        'phone' => 'phoneNumber',
+        'password' => 'bcrypt:password',
+    ],
+    'customers' => [
+        'email' => 'safeEmail',
+        'first_name' => 'firstName',
+        'last_name' => 'lastName',
+        'address' => 'address',
+    ],
+],
+```
+
+The values use [Faker](https://fakerphp.github.io/) methods. Special prefix `bcrypt:` will hash the generated value.
+
+### Usage
+
+```bash
+php artisan db:production-sync --anonymize
+```
+
+Or use the shorthand:
+
+```bash
+php artisan db:production-sync -A
+```
+
+The anonymization runs **after** the database import is complete. Each configured table will be processed with a progress indicator.
+
+**Important:** Only use anonymization when syncing to local/staging environments and ensure you have permission to sync production data within your organization's policies.
+
 ## Aliases
 
 There are shortcuts that can be used:
 
 `-T` = will use `--test`
-`F` = will use `--filename`
+`-F` = will use `--filename`
+`-A` = will use `--anonymize`
 
 ## Alternative name
 

@@ -35,3 +35,19 @@ test('runs with valid credentials', function () {
         ->assertExitCode(true)
         ->expectsOutput("\nDB Synced");
 });
+
+test('anonymize flag accepts configuration', function () {
+    config(['app.env' => 'local']);
+    config(['dbsync.host' => '127.0.0.1']);
+    config(['dbsync.username' => 'root']);
+    config(['dbsync.database' => 'demo']);
+    config(['dbsync.anonymize' => [
+        'users' => [
+            'email' => 'safeEmail',
+            'name' => 'name',
+        ],
+    ]]);
+
+    $this->artisan('db:production-sync --test --anonymize')
+        ->assertExitCode(true);
+});

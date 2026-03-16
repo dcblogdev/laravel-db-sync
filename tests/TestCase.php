@@ -36,5 +36,6 @@ class TestCase extends Orchestra
             'local',
             'staging'
         ]);
+        $app['config']->set('dbsync.anonymize', []);
     }
 }
