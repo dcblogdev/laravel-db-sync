@@ -73,12 +73,12 @@ class DbSyncCommand extends Command
                 }
             }
 
-            $useSsh && $this->info("\n" . sprintf('Connecting to %s@%s on port %s', $sshUsername, $host, $sshPort) . "\n");
+            $useSsh && $this->info("\n".sprintf('Connecting to %s@%s on port %s', $sshUsername, $host, $sshPort)."\n");
 
             if (isset($tables) && count($tables) > 0) {
-                $this->info("\n" . 'Syncing tables: ' . implode(', ', $tables) . "\n");
+                $this->info("\n".'Syncing tables: '.implode(', ', $tables)."\n");
             } else {
-                $this->info("\n" . 'Syncing database: ' . $database . "\n");
+                $this->info("\n".'Syncing database: '.$database."\n");
             }
 
             $bar = $this->output->createProgressBar(2);
@@ -94,7 +94,6 @@ class DbSyncCommand extends Command
                 exec("$dumpProgram --defaults-extra-file=$remoteCnf --single-transaction $gtidPurgedOff --port=$port --host=$mysqlHostName --user=$username $database $tablesToDump $ignoreString $mysqldumpSkipTzUtc --column-statistics=0 > $fileName", $output);
                 unlink($remoteCnf);
             }
-            error_log(print_r($dumpProgram, true));
 
             $bar->setMessage('Importing...');
             $bar->advance();
@@ -189,7 +188,7 @@ class DbSyncCommand extends Command
                 $bar->advance();
             } catch (\Exception $e) {
                 $this->newLine();
-                $this->error("Failed to anonymize table '{$table}': " . $e->getMessage());
+                $this->error("Failed to anonymize table '{$table}': ".$e->getMessage());
                 $bar->advance();
             }
         }
