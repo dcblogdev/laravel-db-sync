@@ -21,6 +21,7 @@ class TestCase extends Orchestra
         $app['config']->set('dbsync.sshUsername', '');
         $app['config']->set('dbsync.sshPort', 22);
         $app['config']->set('dbsync.username', '');
+        $app['config']->set('dbsync.databaseType', 'mysql');
         $app['config']->set('dbsync.mysqlHostName', 'localhost');
         $app['config']->set('dbsync.port', 3306);
         $app['config']->set('dbsync.database', '');
