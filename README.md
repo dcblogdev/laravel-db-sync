@@ -89,6 +89,11 @@ For only mysqldump:
 REMOTE_MYSQLDUMP_SKIP_TZ_UTC=true
 ```
 
+If the remote database uses MariaDB:
+```
+REMOTE_DATABASE_TYPE=mariadb
+```
+
 ## Usage
 
 To export a remote database to OVERRIDE your local database by running:
