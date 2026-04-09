@@ -28,6 +28,11 @@ return [
     'username' => env('REMOTE_DATABASE_USERNAME', ''),
 
     /*
+     * Set the database type
+     */
+    'databaseType' => env('REMOTE_DATABASE_TYPE', 'mysql'),
+
+    /*
      * Database host (optional)
      */
     'mysqlHostName' => env('REMOTE_DATABASE_MYSQL_HOSTNAME', 'localhost'),

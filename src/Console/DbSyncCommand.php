@@ -26,6 +26,7 @@ class DbSyncCommand extends Command
         $sshPort     = config('dbsync.sshPort');
         $host        = config('dbsync.host');
 
+        $databaseType          = config('dbsync.databaseType');
         $mysqlHostName         = config('dbsync.mysqlHostName');
         $username              = config('dbsync.username');
         $database              = config('dbsync.database');
@@ -36,6 +37,9 @@ class DbSyncCommand extends Command
         $removeFileAfterImport = config('dbsync.removeFileAfterImport');
         $fileName              = $this->option('filename') ?? config('dbsync.defaultFileName');
         $mysqldumpSkipTzUtc    = config('dbsync.mysqldumpSkipTzUtc') ? '--skip-tz-utc' : '';
+        $gtidPurgedOff         = $databaseType === 'mysql' ? '--set-gtid-purged=OFF' : '';
+
+        $dumpProgram           = $databaseType === 'mysql' ? 'mysqldump' : 'mariadb-dump';
 
         $targetConnection      = config('dbsync.targetConnection');
         $defaultConnection     = config('database.default');
@@ -83,11 +87,11 @@ class DbSyncCommand extends Command
             $bar->start();
 
             if ($useSsh === true) {
-                exec("ssh $sshUsername@$host -p$sshPort \"mysqldump --single-transaction --set-gtid-purged=OFF --port=$port --host=$mysqlHostName --user=$username --password=$password $database $tablesToDump $ignoreString 2>/dev/null\" > $fileName", $output);
+                exec("ssh $sshUsername@$host -p$sshPort \"$dumpProgram --single-transaction $gtidPurgedOff --port=$port --host=$mysqlHostName --user=$username --password=$password $database $tablesToDump $ignoreString 2>/dev/null\" > $fileName", $output);
             } else {
                 $remoteCnf = tempnam(sys_get_temp_dir(), 'dbsync_');
                 file_put_contents($remoteCnf, "[client]\npassword={$password}\n");
-                exec("mysqldump --defaults-extra-file=$remoteCnf --single-transaction --set-gtid-purged=OFF --port=$port --host=$mysqlHostName --user=$username $database $tablesToDump $ignoreString $mysqldumpSkipTzUtc --column-statistics=0 > $fileName", $output);
+                exec("$dumpProgram --defaults-extra-file=$remoteCnf --single-transaction $gtidPurgedOff --port=$port --host=$mysqlHostName --user=$username $database $tablesToDump $ignoreString $mysqldumpSkipTzUtc --column-statistics=0 > $fileName", $output);
                 unlink($remoteCnf);
             }
 
